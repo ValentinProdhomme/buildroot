@@ -80,6 +80,14 @@ ifeq ($(BR2_PACKAGE_PYTHON),y)
   
 endif
 
+ifeq ($(BR2_PACKAGE_DPDK_KMOD),y)
+	define DPDK_INSTALL_TARGET_KMOD
+		$(INSTALL) -m 0755 -D -d $(TARGET_DIR)/lib/modules/$(LINUX_VERSION_PROBED)/dpdk
+		$(INSTALL) -m 0755 -D $(@D)/build/kmod/*.ko $(TARGET_DIR)/lib/modules/$(LINUX_VERSION_PROBED)/dpdk
+	endef
+
+endif
+
 ifeq ($(BR2_PACKAGE_DPDK_TOOLS_TESTPMD),y)
   define DPDK_INSTALL_TARGET_TESTPMD
     $(INSTALL) -m 0755 -D -d $(TARGET_DIR)/usr/bin
