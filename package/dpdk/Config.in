@@ -19,7 +19,7 @@ config BR2_PACKAGE_DPDK
   
   http://www.dpdk.org/
   
-  if BR2_PACKAGE_DPDK
+if BR2_PACKAGE_DPDK
   config BR2_PACKAGE_DPDK_CONFIG
     string "Configuration"
     
