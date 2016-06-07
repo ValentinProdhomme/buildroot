@@ -11,6 +11,7 @@ DPDK_SOURCE = dpdk-$(DPDK_VERSION).tar.xz
 DPDK_LICENSE = BSD
 DPDK_LICENSE_FILES = LICENSE.LGPL LICENSE.GPL
 DPDK_INSTALL_STAGING = YES
+DPDK_INSTALL_TARGET = YES
 
 DPDK_DEPENDENCIES += linux
 
@@ -69,6 +70,16 @@ else
   
 endif
 
+
+# Install kernel modules to target directory : /module/version/dpdk
+ifeq ($(BR2_PACKAGE_DPDK_KMOD),y)
+  define DPDK_INSTALL_TARGET_KMOD
+    $(INSTALL) -m 0755 -D -d $(TARGET_DIR)/lib/modules/$(LINUX_VERSION_PROBED)/dpdk
+    $(INSTALL) -m 0755 -D $(@D)/build/kmod/*.ko $(TARGET_DIR)/lib/modules/$(LINUX_VERSION_PROBED)/dpdk
+  endef
+
+endif
+
 ifeq ($(BR2_PACKAGE_PYTHON),y)
   define DPDK_INSTALL_TARGET_PYSCRIPTS
     $(INSTALL) -m 0755 -D -d $(STAGING_DIR)/usr/bin
@@ -78,14 +89,6 @@ ifeq ($(BR2_PACKAGE_PYTHON),y)
   
   DPDK_DEPENDENCIES += python
   
-endif
-
-ifeq ($(BR2_PACKAGE_DPDK_KMOD),y)
-	define DPDK_INSTALL_TARGET_KMOD
-		$(INSTALL) -m 0755 -D -d $(TARGET_DIR)/lib/modules/$(LINUX_VERSION_PROBED)/dpdk
-		$(INSTALL) -m 0755 -D $(@D)/build/kmod/*.ko $(TARGET_DIR)/lib/modules/$(LINUX_VERSION_PROBED)/dpdk
-	endef
-
 endif
 
 ifeq ($(BR2_PACKAGE_DPDK_TOOLS_TESTPMD),y)
@@ -118,6 +121,7 @@ endef
 
 define DPDK_INSTALL_TARGET_CMDS
   $(DPDK_INSTALL_TARGET_LIBS)
+  $(DPDK_INSTALL_TARGET_KMOD)
   $(DPDK_INSTALL_TARGET_PYSCRIPTS)
   $(DPDK_INSTALL_TARGET_TESTPMD)
   $(DPDK_INSTALL_TARGET_TEST)
